@@ -1,7 +1,7 @@
 import cv2
 import torch
-from torchvision.models.optical_flow import raft_small, Raft_Small_Weights
-from torchvision.models.optical_flow import raft_large, Raft_Large_Weights
+from torchvision.models.optical_flow import raft_small
+from torchvision.models.optical_flow import raft_large
 from torchvision.utils import flow_to_image
 from utils import BasicUtils
 
@@ -10,7 +10,28 @@ def frame_preprocess(frame, device):
     frame = frame.unsqueeze(0)
     return frame
 
-model = raft_small(weights=Raft_Small_Weights.C_T_V2)
+# raft_large weights
+# C_T_V1, C_T_V2, C_T_SKHT_V1, C_T_SKHT_V2, C_T_SKHT_K_V1, C_T_SKHT_K_V2
+
+# raft_small weights
+# C_T_V1, C_T_V2
+model_type = "raft_small"
+weights_name = "Raft_Small_Weights.C_T_V1"
+
+if "raft_small" == model_type:
+    if "Raft_Small_Weights" in weights_name:
+        model = raft_small(weights=weights_name)
+    else:
+        print("Chosen weights are not usable in raft_small! Please use the appropriate weight!")
+        exit()
+
+elif "raft_large" == model_type:
+    if "Raft_Large_Weights" in weights_name:
+        model = raft_large(weights=weights_name)
+    else:
+        print("Chosen weights are not usable in raft_small! Please use the appropriate weight!")
+        exit()
+
 device = BasicUtils().device_chooser()
 
 model.eval()
